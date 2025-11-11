@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transcodificador Distribuido</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Plataforma de Transcodificación Distribuida</h1>
+            <p>Sube un vídeo y lo convertiremos a múltiples resoluciones usando un sistema distribuido.</p>
+        </header>
+
+        <!-- Sección de subida de archivos -->
+        <section id="upload-section">
+            <h2>1. Sube tu vídeo</h2>
+            <div id="upload-box" class="upload-box">
+                <input type="file" id="file-input" accept="video/*" hidden>
+                <p>Arrastra tu vídeo aquí o haz <strong>clic</strong> para seleccionar</p>
+            </div>
+            <div id="upload-progress-container" class="progress-container" style="display: none;">
+                <div id="upload-progress-bar" class="progress-bar"></div>
+            </div>
+            <p id="upload-status"></p>
+        </section>
+
+        <section id="job-status-section" style="display: none;">
+            <h2>2. Estado del Procesamiento</h2>
+            <div id="job-details">
+                <p><strong>Archivo Original:</strong> <span id="original-filename"></span></p>
+                <p><strong>Job ID:</strong> <span id="job-id-display"></span></p>
+            </div>
+            <div id="tasks-container" class="tasks-container">
+            </div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

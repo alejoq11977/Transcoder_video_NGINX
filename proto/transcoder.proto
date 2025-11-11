@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package transcoder;
+
+service TranscoderService {
+  rpc ProcessVideo(VideoTaskRequest) returns (TaskStatusResponse);
+}
+
+message VideoTaskRequest {
+  string job_id = 1;
+  string input_file_path = 2;
+  string output_file_path = 3;
+  string resolution = 4;
+}
+
+message TaskStatusResponse {
+  bool success = 1;
+  string message = 2;
+}

@@ -1,0 +1,74 @@
+services:
+  nginx:
+    build: ./nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+      - media_processed:/media/processed:ro
+    depends_on:
+      - api-server-1
+      - api-server-2
+    networks:
+      - app-network
+
+  api-server-1:
+    build:
+      context: .
+      dockerfile: api_server/Dockerfile
+    command: >
+      sh -c "echo '--- [API-SERVER-1] Intentando ping a worker-node... ---' &&
+             ping -c 4 worker-node &&
+             echo '--- [API-SERVER-1] Ping finalizado. Iniciando Uvicorn... ---' &&
+             uvicorn main:app --host 0.0.0.0 --port 8000"
+    environment:
+      - GRPC_DNS_RESOLVER=native
+      - GRPC_POLL_STRATEGY=poll
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - media_uploads:/media/uploads
+      - media_processed:/media/processed
+    depends_on:
+      - worker-node
+    networks:
+      - app-network
+    links:
+      - "worker-node"
+
+  api-server-2:
+    build:
+      context: .
+      dockerfile: api_server/Dockerfile
+    environment:
+      - GRPC_DNS_RESOLVER=native
+      - GRPC_POLL_STRATEGY=poll
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - media_uploads:/media/uploads
+      - media_processed:/media/processed
+    depends_on:
+      - worker-node
+    networks:
+      - app-network
+    links:
+      - "worker-node"
+
+  worker-node:
+    build:
+      context: .
+      dockerfile: worker_node/Dockerfile
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - media_uploads:/media/uploads:ro
+      - media_processed:/media/processed
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  media_uploads:
+  media_processed:
